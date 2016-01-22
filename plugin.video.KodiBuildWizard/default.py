@@ -24,6 +24,7 @@ FANART = xbmc.translatePath(os.path.join('special://home/addons/' + addon_id , '
 ICON = xbmc.translatePath(os.path.join('special://home/addons/' + addon_id, 'icon.png'))
 ART = xbmc.translatePath(os.path.join('special://home/addons/' + addon_id + '/resources/art/'))
 VERSION = "0.0.1"
+CMPATH = xbmc.translatePath('special://home')
 DBPATH = xbmc.translatePath('special://database')
 TNPATH = xbmc.translatePath('special://thumbnails');
 PATH = "The Kodi Build Wizard"
@@ -33,6 +34,7 @@ EXCLUDES     = ['sources.xml','KodiBuildBackup','plugin.video.KodiBuildWizard','
 
 
 def INDEX():
+    addDir('COMMON FOLDER',BASEURL,12,ART+'icon.png',FANART,'')
     addDir('INSTALL KODI BUILD WIZARD',BASEURL,2,ART+'icon.png',FANART,'')
     addDir('MAINTENANCE',BASEURL,3,ART+'icon.png',FANART,'')
     addDir('CONTACT',BASEURL,8,ART+'icon.png',FANART,'')
@@ -56,8 +58,14 @@ def BUILDMENU():
     addDir('Install Build 08',BASEURL+'/build/build08.zip',5,ART+'icon.png',FANART,'')
     setView('movies', 'MAIN')
 
+def BUILDCOMMON():
+    addDir('Install to HOME',CMPATH,10,ART+'icon.png',FANART,'')
+    setview('movies','MAIN')
+    addDir('Install to KODI SDCARD','/storage/sdcard1/Android/data/org.xbmc.kodi/files',10,ART+'icon.png',FANART,'')
+    setview('movies','MAIN')
+    addDir('Install to KODI SBMC','/storage/sdcard1/Android/data/com.semperpax.spmc/files',10,ART+'icon.png',FANART,'')
+    setview('movies','MAIN')
 
-	
 def MAINTENANCE():
     addDir('DELETE CACHE','url',4,ART+'icon.png',FANART,'')
     addDir('FRESH START','url',6,ART+'icon.png',FANART,'')
@@ -90,12 +98,36 @@ def TextBoxes(heading,announce):
 def facebook():
     TextBoxes('The KodiStu Build Wizard', '[COLOR=red]Welcome to The KodiStu Build Wizard[/COLOR]'
             'For all help and support please Make use and participate in the following Social Media Sources :-'
-            '[color=blue]Facebook at facebook.com/.....   [/COLOR]'
-            '[color=purple]Twitter  at @....... [/COLOR]'
-            '[COLOR=orange]..... [/COLOR]'
-            '[COLOR=blue] .... [/COLOR] ' )
+            '[color=blue]Facebook at facebook.com/.....   [/color]'
+            '[color=purple]Twitter  at @....... [/color]'
+            '[color=orange]..... [/color]'
+            '[color=blue] .... [/color] ' )
         
-    
+
+#################################
+####BUILD COMMON ################
+#################################
+
+def BUILDCOMMON(name,url,description):
+    path = xbmc.translatePath(os.path.join('special://home/addons','packages'))
+    dp = xbmcgui.DialogProgress()
+    dp.create("Kodi Build Wizard","Downloading ", '', 'Please Wait')
+    lib=os.path.join(path, 'common.zip')
+    try:
+        os.remove(lib)
+    except:
+        pass
+    downloader.download("http://kodistu.16mb.com/build/common.zip",lib,dp)
+    addonfolder = url
+    time.sleep(2)
+    dp.update(0,"", "Extracting Zip Please Wait")
+    print '======================================='
+    print addonfolder
+    print '======================================='
+    extract.all(lib,addonfolder,dp)
+    dialog = xbmcgui.dialog()
+    dialog.ok("The Kodi Build Wizard", "Common Folder Created in Selected Location, Press OK to force close Kodi")
+    killxbmc()
 
 #################################
 ####BUILD INSTALL################
@@ -121,8 +153,6 @@ def WIZARD(name,url,description):
     dialog = xbmcgui.Dialog()
     dialog.ok("The Kodi Build Wizard", "To save changes you now need to force close Kodi, Press OK to force close Kodi")
     killxbmc()
-
-
 
 ################################
 ###DELETE PACKAGES##############
@@ -151,8 +181,6 @@ def DeletePackages(url):
     except: 
         dialog = xbmcgui.Dialog()
         dialog.ok("The KodiStu Build Wizard", "Sorry we were not able to remove Package Files", "[COLOR blue] Time to Restart [/COLOR]")
-    
-
 
 #################################
 ###DELETE CACHE##################
@@ -497,8 +525,6 @@ def FRESHSTART(params):
         plugintools.add_item(action="",title="Now Exit Kodi",folder=False)
     else: plugintools.message(AddonTitle,"Your settings","has not been changed"); plugintools.add_item(action="",title="Done",folder=False)
 
-          
-        
 def get_params():
         param=[]
         paramstring=sys.argv[2]
@@ -521,6 +547,7 @@ N = base64.decodestring('')
 T = base64.decodestring('L2FkZG9ucy50eHQ=')
 B = base64.decodestring('')
 F = base64.decodestring('')
+
 def addDir(name,url,mode,iconimage,fanart,description):
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&iconimage="+urllib.quote_plus(iconimage)+"&fanart="+urllib.quote_plus(fanart)+"&description="+urllib.quote_plus(description)
         ok=True
@@ -601,7 +628,7 @@ elif mode==5:
         WIZARD(name,url,description)
 
 elif mode==6:        
-	FRESHSTART(params)
+        FRESHSTART(params)
 	
 elif mode==7:
        DeletePackages(url)
@@ -612,8 +639,14 @@ elif mode==8:
 elif mode==9:
        donation()
 
+elif mode==10:
+        MAKECOMMON(name,url,description)
+
 elif mode==11:
         DELETEIVUEDB()
 
-        
+elif mode==12:
+        BUILDCOMMON()
+
+
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
