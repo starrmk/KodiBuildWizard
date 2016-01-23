@@ -10,8 +10,6 @@ from addon.common.addon import Addon
 from addon.common.net import Net
 
 
-
-
 USER_AGENT = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
 addon_id = 'plugin.video.KodiBuildWizard'
 ADDON = xbmcaddon.Addon(id=addon_id)
@@ -23,55 +21,49 @@ U = ADDON.getSetting('User')
 FANART = xbmc.translatePath(os.path.join('special://home/addons/' + addon_id , 'icon.png'))
 ICON = xbmc.translatePath(os.path.join('special://home/addons/' + addon_id, 'icon.png'))
 ART = xbmc.translatePath(os.path.join('special://home/addons/' + addon_id + '/resources/art/'))
-VERSION = "0.0.1"
-CMPATH = xbmc.translatePath('special://home')
-DBPATH = xbmc.translatePath('special://database')
+VERSION = "1.0.1"
+CMPATH = xbmc.translatePath('special://home');
+DBPATH = xbmc.translatePath('special://database');
 TNPATH = xbmc.translatePath('special://thumbnails');
+
 PATH = "The Kodi Build Wizard"
 BASEURL = "http://kodistu.16mb.com/"
 H = 'http://'
-EXCLUDES     = ['sources.xml','KodiBuildBackup','plugin.video.KodiBuildWizard','script.module.addon.common','repository.KodiBuildWizard','common','special://home/common/','/storage/sdcard1/Android/data/org.xbmc.kodi/files/','/storage/sdcard1/Android/data/com.semperpax.spmc/']
+EXCLUDES     = ['plugin.video.KodiBuildWizard','script.module.addon.common','repository.KodiBuildWizard','common','special://home/common/','/storage/sdcard1/Android/data/org.xbmc.kodi/files/','/storage/sdcard1/Android/data/com.semperpax.spmc/']
 
 
 def INDEX():
-    addDir('COMMON FOLDER',BASEURL,12,ART+'icon.png',FANART,'')
-    addDir('INSTALL KODI BUILD WIZARD',BASEURL,2,ART+'icon.png',FANART,'')
-    addDir('MAINTENANCE',BASEURL,3,ART+'icon.png',FANART,'')
-    addDir('CONTACT',BASEURL,8,ART+'icon.png',FANART,'')
+    addDir('1 - INSTALL KODIBUILD',BASEURL,2,ART+'icon.png',FANART,'')
+    addDir('2 - COMMON FOLDER    ',BASEURL,3,ART+'icon.png',FANART,'')
+    addDir('3 - MAINTENANCE      ',BASEURL,4,ART+'icon.png',FANART,'')
+    addDir('4 - CONTACT          ',BASEURL,10,ART+'icon.png',FANART,'')
     setView('movies', 'MAIN')
+
 
 def BUILDMENU():
-    addDir('Install Build 01',BASEURL+'/build/build01.zip',5,ART+'icon.png',FANART,'')
+    addDir('Install Build 01',BASEURL+'/build/build01.zip',8,ART+'icon.png',FANART,'')
+    addDir('Install Build 02',BASEURL+'/build/build02.zip',8,ART+'icon.png',FANART,'')
+    addDir('Install Build 03',BASEURL+'/build/build03.zip',8,ART+'icon.png',FANART,'')
+    addDir('Install Build 04',BASEURL+'/build/build04.zip',8,ART+'icon.png',FANART,'')
+    addDir('Install Build 05',BASEURL+'/build/build05.zip',8,ART+'icon.png',FANART,'')
+    addDir('Install Build 06',BASEURL+'/build/build06.zip',8,ART+'icon.png',FANART,'')
+    addDir('Install Build 07',BASEURL+'/build/build07.zip',8,ART+'icon.png',FANART,'')
+    addDir('Install Build 08',BASEURL+'/build/build08.zip',8,ART+'icon.png',FANART,'')
     setView('movies', 'MAIN')
-    addDir('Install Build 02',BASEURL+'/build/build02.zip',5,ART+'icon.png',FANART,'')
-    setView('movies', 'MAIN')
-    addDir('Install Build 03',BASEURL+'/build/build03.zip',5,ART+'icon.png',FANART,'')
-    setView('movies', 'MAIN')
-    addDir('Install Build 04',BASEURL+'/build/build04.zip',5,ART+'icon.png',FANART,'')
-    setView('movies', 'MAIN')
-    addDir('Install Build 05',BASEURL+'/build/build05.zip',5,ART+'icon.png',FANART,'')
-    setView('movies', 'MAIN')
-    addDir('Install Build 06',BASEURL+'/build/build06.zip',5,ART+'icon.png',FANART,'')
-    setView('movies', 'MAIN')
-    addDir('Install Build 07',BASEURL+'/build/build07.zip',5,ART+'icon.png',FANART,'')
-    setView('movies', 'MAIN')
-    addDir('Install Build 08',BASEURL+'/build/build08.zip',5,ART+'icon.png',FANART,'')
-    setView('movies', 'MAIN')
+
 
 def BUILDCOMMON():
-    addDir('Install to HOME',CMPATH,10,ART+'icon.png',FANART,'')
-    setview('movies','MAIN')
-    addDir('Install to KODI SDCARD','/storage/sdcard1/Android/data/org.xbmc.kodi/files',10,ART+'icon.png',FANART,'')
-    setview('movies','MAIN')
-    addDir('Install to KODI SBMC','/storage/sdcard1/Android/data/com.semperpax.spmc/files',10,ART+'icon.png',FANART,'')
-    setview('movies','MAIN')
+    addDir('Install to HOME       ',CMPATH,9,ART+'icon.png',FANART,'')
+    addDir('Install to KODI SDCARD','/storage/sdcard1/Android/data/org.xbmc.kodi/files',9,ART+'icon.png',FANART,'')
+    addDir('Install to KODI SBMC  ','/storage/sdcard1/Android/data/com.semperpax.spmc/files',9,ART+'icon.png',FANART,'')
+    setView('movies','MAIN')
+
 
 def MAINTENANCE():
-    addDir('DELETE CACHE','url',4,ART+'icon.png',FANART,'')
-    addDir('FRESH START','url',6,ART+'icon.png',FANART,'')
-    addDir('DELETE PACKAGES','url',7,ART+'icon.png',FANART,'')
+    addDir('1 - DELETE CACHE   ','url',5,ART+'icon.png',FANART,'')
+    addDir('2 - FRESH START    ','url',6,ART+'icon.png',FANART,'')
+    addDir('3 - DELETE PACKAGES','url',7,ART+'icon.png',FANART,'')
     setView('movies', 'MAIN')
-
 
 #################################
 ####### POPUP TEXT BOXES ########
@@ -96,19 +88,14 @@ def TextBoxes(heading,announce):
   TextBox()
 
 def facebook():
-    TextBoxes('The KodiStu Build Wizard', '[COLOR=red]Welcome to The KodiStu Build Wizard[/COLOR]'
-            'For all help and support please Make use and participate in the following Social Media Sources :-'
-            '[color=blue]Facebook at facebook.com/.....   [/color]'
-            '[color=purple]Twitter  at @....... [/color]'
-            '[color=orange]..... [/color]'
-            '[color=blue] .... [/color] ' )
+    TextBoxes('The KodiStu Build Wizard', '[COLOR=red]Welcome to The KodiStu Build Wizard[/COLOR]')
         
 
 #################################
 ####BUILD COMMON ################
 #################################
 
-def BUILDCOMMON(name,url,description):
+def MAKECOMMON(name,url,description):
     path = xbmc.translatePath(os.path.join('special://home/addons','packages'))
     dp = xbmcgui.DialogProgress()
     dp.create("Kodi Build Wizard","Downloading ", '', 'Please Wait')
@@ -117,7 +104,7 @@ def BUILDCOMMON(name,url,description):
         os.remove(lib)
     except:
         pass
-    downloader.download("http://kodistu.16mb.com/build/common.zip",lib,dp)
+    downloader.download('http://kodistu.16mb.com/build/common.zip',lib,dp)
     addonfolder = url
     time.sleep(2)
     dp.update(0,"", "Extracting Zip Please Wait")
@@ -610,43 +597,25 @@ def setView(content, viewType):
         xbmcplugin.setContent(int(sys.argv[1]), content)
     if ADDON.getSetting('auto-view')=='true':
         xbmc.executebuiltin("Container.SetViewMode(%s)" % ADDON.getSetting(viewType) )
-        
-        
 if mode==None or url==None or len(url)<1:
         INDEX()
-
 elif mode==2:
         BUILDMENU()
-
 elif mode==3:
-        MAINTENANCE()
-		
+        BUILDCOMMON()
 elif mode==4:
-        deletecachefiles(url)
-
+        MAINTENANCE()
 elif mode==5:
-        WIZARD(name,url,description)
-
+        deletecachefiles(url)
 elif mode==6:        
         FRESHSTART(params)
-	
 elif mode==7:
-       DeletePackages(url)
-
+        DeletePackages(url)
 elif mode==8:
-       facebook()
-       
+        WIZARD(name,url,description)
 elif mode==9:
-       donation()
-
-elif mode==10:
         MAKECOMMON(name,url,description)
-
-elif mode==11:
-        DELETEIVUEDB()
-
-elif mode==12:
-        BUILDCOMMON()
-
+elif mode==10:
+        facebook()
 
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
