@@ -56,6 +56,7 @@ def BUILDCOMMON():
     addDir('Install to HOME       ',CMPATH,9,ART+'icon.png',FANART,'')
     addDir('Install to KODI SDCARD','/storage/sdcard1/Android/data/org.xbmc.kodi/files',9,ART+'icon.png',FANART,'')
     addDir('Install to KODI SBMC  ','/storage/sdcard1/Android/data/com.semperpax.spmc/files',9,ART+'icon.png',FANART,'')
+    
     setView('movies','MAIN')
 
 
