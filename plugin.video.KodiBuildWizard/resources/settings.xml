@@ -2,10 +2,23 @@
 <settings>
     <category label="Auto-View">
 		<setting id="auto-view" type="bool" label="Enable Auto View" default="true"/>
-		<setting id="MAIN" type="number" label="MAIN" default="500" enable="!eq(-1,false)"/>
+		<setting id="MAIN" type="number" label="MAIN" default="50" enable="!eq(-1,false)"/>
         <setting id="message" type="bool" label="for messages" default="false" visible="false"/>
         <setting id="pop_time" type="text" label="For POP UP" default="2000-01-01 00:00:00" visible="false"/>
         <setting id="ga_time" type="text" label="GA Called" default="2000-01-01 00:00:00" visible="false"/>
         <setting id="visitor_ga" type="text" label="GA visitor" default="" visible="false"/>
-   	</category>	   	
+        <setting id="base_url" type="text"   label="Base Install URL  " default="http://kodistu.16mb.com" visible="true" />
+        <setting id="COMMON_SELECTED" type="text"   label="Current Selected Common " default="COMMON_HOME_SD" visible="false" />
+        <setting id="COMMON_HOME_SD"  type="folder" label="Path = COMMON_HOME_SD   " source="auto" option="writeable" default="special://home/"         visible="true"/>
+        <setting id="COMMON_HOME_MB"  type="folder" label="Path = COMMON_HOME_MB   " source="auto" option="writeable" default="special://home/common/"  visible="false"/>
+        <setting id="zip"             type="folder" label="Output Super Faves To : " default=""/>
+        <setting id="UserExp"         type="text"   label="Custom User Flag      : " default="none" visible="true" />
+        <setting id="WizStr"          type="text"   label="Wizard String         : " default="standard" visible="true" />
+    </category>
+    <category label="DexProConfig">
+        <setting id="user" type="text" label="[COLOR yellow]DEXTER Username:[/COLOR]" default=""/>
+        <setting id="pass" type="text" label="[COLOR yellow]DEXTER Password:[/COLOR]" default=""/>
+        <setting id="base" type="text" label="[COLOR yellow]DEXTER BASE URL:[/COLOR]" default="http://185.115.32.12:8000/"/>
+        <setting id="epg"  type="text" label="[COLOR yellow]DEXTER USE EPG :[/COLOR]" default="special://home/common/epg/tvguide.xml"/>
+   	</category>
   </settings>

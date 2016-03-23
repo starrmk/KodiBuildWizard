@@ -1,6 +1,5 @@
 
-import xbmc, xbmcaddon, xbmcgui, xbmcplugin,os,base64,sys,xbmcvfs, requests
-
+import xbmc, xbmcaddon, xbmcgui, xbmcplugin,os,base64,sys,xbmcvfs
 import shutil
 import urllib, urllib2
 import re , glob
@@ -26,7 +25,7 @@ dp           = xbmcgui.DialogProgress()
 net          = Net()
 U            = ADDON.getSetting('User')
 
-FANART       = xbmc.translatePath(os.path.join('special://home/addons/' + addon_id , 'background.jpg'))
+FANART       = xbmc.translatePath(os.path.join('special://home/addons/' + addon_id , 'icon.png'))
 ICON         = xbmc.translatePath(os.path.join('special://home/addons/' + addon_id, 'icon.png'))
 ART          = xbmc.translatePath(os.path.join('special://home/addons/' + addon_id + '/resources/art/'))
 
@@ -63,26 +62,13 @@ PWAS       = PWASN
 PNOW       = SCPATH
 BASEURL    = BDPATH
 H          = 'http://'
-EXCLUDES   = ['repository.xbmc.org','plugin.video.KodiBuildWizard','xbmc.python','xbmc.python.pluginsource','script.module.requests','script.module.addon.common','repository.KodiBuildWizard','common','service.xbmc.versioncheck']
-
-# Configure for Dexter Pro Bits....
-username = ADDON.getSetting('user')
-password = ADDON.getSetting('pass')
-loggedin = ADDON.getSetting('loggedin')
-first = ADDON.getSetting('first')
-datapath = xbmc.translatePath(ADDON.getAddonInfo('profile'))
-_addon = xbmcaddon.Addon()
-_path = _addon.getAddonInfo("path")
-addonDir = ADDON.getAddonInfo('path').decode("utf-8")
-BASE = ADDON.getSetting('base')
-uEPG = ADDON.getSetting('epg')
+EXCLUDES   = ['repository.xbmc.org','plugin.video.KodiBuildWizard','script.module.addon.common','repository.KodiBuildWizard','common','special://home/common',SCPATH,SCPATH1]
 
 def INDEX():
     addDir('1 - INSTALL KODIBUILD    ',BASEURL,2,ART+'icon.png',FANART,'')
     addDir('2 - COMMON CONFIGURATION ',BASEURL,3,ART+'icon.png',FANART,'')
     addDir('3 - MAINTENANCE          ',BASEURL,4,ART+'icon.png',FANART,'')
     addDir('4 - BUILD ADMIN          ',BASEURL,17,ART+'icon.png',FANART,'')
-    addDir('5 - CONFIGURE DEXTERPRO  ',BASEURL,22,ART+'icon.png',FANART,'')
     setView('movies', 'MAIN')
 
 def BUILDMENU():
@@ -117,99 +103,6 @@ def BUILDSC():
     addDir('3 - Export BuildWizard           ','url',19,ART+'icon.png',FANART,'')
     addDir('4 - Export UserSettings to Zip   ','url',20,ART+'icon.png',FANART,'')
     setView('movies', 'MAIN')
-
-
-####################################
-####  DEXTER PRO CONFIGURATION  ####
-####################################
-
-def DEXMENU1():
-    addDir('Configure Dexter TV ','url',23,ART+'icon.png',FANART,'')
-    addDir('Generate INI        ','url',24,ART+'icon.png',FANART,'')
-    setView('movies', 'MAIN')
-
-
-def do_configure():
-    dialog = xbmcgui.Dialog()
-    tecleado = keyboard_input(username,'username')
-    set_setting('user',tecleado)
-    tecleado2 = keyboard_input(password,'password')
-    set_setting('pass',tecleado2)
-    r = requests.get(BASE+'panel_api.php?'+'&username='+tecleado+'&password='+tecleado2)
-    step1 = (BASE+'get.php?'+'username='+tecleado+'&password='+tecleado2+'&type=m3u_plus&output=hls')
-    match=re.compile('auth":(.+?)').findall(r.content)
-    for auth in match:
-        if auth == '1':
-            dialog.ok('You Are Now Logged in', 'THANK YOU !')
-            set_setting('loggedin','1')
-            file_path_settings = xbmc.translatePath(os.path.join('special://profile','addon_data','pvr.iptvsimple','settings.xml'))
-            folder_path = xbmc.translatePath(os.path.join('special://profile','addon_data','pvr.iptvsimple'))
-            
-            print "================================================================"
-            print "ORIG & NEW             "
-            print "ORIG file_path_settings : " + os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', '..', 'userdata', 'addon_data', 'pvr.iptvsimple', 'settings.xml')
-            print " NEW file_path_settings : " + xbmc.translatePath(os.path.join('special://profile','addon_data','pvr.iptvsimple','settings.xml'))
-            print "ORIG folder_path        : " + os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', '..', 'userdata', 'addon_data', 'pvr.iptvsimple')
-            print " NEW folder_path        : " + xbmc.translatePath(os.path.join('special://profile','addon_data','pvr.iptvsimple'))
-                        
-            tecleado2 = keyboard_input('0','TimeShift In Hours')
-            timeshift=tecleado2
-            UseEPG = uEPG
-                        
-            if not os.path.exists(folder_path):
-                os.makedirs(folder_path)
-                    
-            file = open(file_path_settings, 'w')
-            file.write('<settings>\n')
-            file.write('<setting id="epgCache" value="true" />\n')
-            file.write('<setting id="epgPath" value="%s" />\n'%UseEPG)
-            file.write('<setting id="epgPathType" value="0" />\n')
-            file.write('<setting id="epgTSOverride" value="true" />\n')
-            file.write('<setting id="epgTimeShift" value="%s.000000" />\n'%timeshift)
-            file.write('<setting id="epgUrl" value="" />\n')
-            file.write('<setting id="logoBaseUrl" value="" />\n')
-            file.write('<setting id="logoFromEpg" value="1" />\n')
-            file.write('<setting id="logoPath" value="" />\n')
-            file.write('<setting id="logoPathType" value="1" />\n')
-            file.write('<setting id="m3uCache" value="true" />\n')
-            file.write('<setting id="m3uPath" value="" />\n')
-            file.write('<setting id="m3uPathType" value="1" />\n')
-            file.write('<setting id="m3uUrl" value="%s" />\n'%step1)
-            file.write('<setting id="sep1" value="" />\n')
-            file.write('<setting id="sep2" value="" />\n')
-            file.write('<setting id="sep3" value="" />\n')
-            file.write('<setting id="startNum" value="1" />\n')
-            file.write('</settings>\n')
-            file.close()
-                        
-            dialog = xbmcgui.Dialog()
-            dialog.ok('Configuration of PVR is Successful', 'The PVR Simple Client of you KODI has been successfully configured. Please restart Kodi for the changes to take effect.')
-        else:
-            dialog.ok('error','Incorrect User/password')
-
-def createini():
-    dialog = xbmcgui.Dialog()
-    with open(addonDir+"/dexter.ini", "w") as f:
-        url = ('http://185.115.32.12:8000/panel_api.php?username=%s&password=%s'%(username,password))
-        r = requests.get(url)
-        match=re.compile('"name":"(.+?)".+?stream_id":"(.+?)"').findall(r.content)
-        f.write('[plugin.video.dex]\n')
-        for name,stream in match:
-            f.write(name+'=plugin://plugin.video.dex/?url='+stream+'&mode=55\n')
-        f.close()
-        dialog.ok('All Done','Created INI In The special://home/addons/plugin.video.KodiBuildWizard/')
-
-def set_setting(name,value):
-    ADDON.setSetting(name,value )
-
-def keyboard_input(default_text="", title="", hidden=False):
-    keyboard = xbmc.Keyboard(default_text,title,hidden)
-    keyboard.doModal()
-    if (keyboard.isConfirmed()):
-        tecleado = keyboard.getText()
-    else:
-        tecleado = ""
-    return tecleado
 
 
 #################################
@@ -1193,12 +1086,6 @@ elif mode==20:
         BACKUP_UX()
 elif mode==21:
         get_usercustom(url)
-elif mode==22:
-        DEXMENU1()
-elif mode==23:
-        do_configure()
-elif mode==24:
-        createini()
 elif mode==99:
         facebook()
 

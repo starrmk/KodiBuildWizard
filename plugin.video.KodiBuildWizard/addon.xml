@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.KodiBuildWizard" name="The KodiStu Build Wizard" version="0.1.A" provider-name="Stu C">
+<addon id="plugin.video.KodiBuildWizard" name="The KodiStu Build Wizard" version="2.0" provider-name="Stu C">
   <requires>
-    <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="xbmc.python" version="2.19"/>
+    <import addon="script.module.requests" />
 	<import addon="script.module.addon.common" />
   </requires>
   <extension point="xbmc.python.pluginsource" library="default.py">
@@ -9,7 +10,7 @@
   </extension>
   <extension point="xbmc.addon.metadata">
     <summary lang="en">The KodiStu Build Wizard</summary>
-    <description lang="en">The KodiStu Build Wizard provides easy configuration of Kodi, SPMC + TVMC,
+    <description lang="en">The Kodi Build Wizard provides easy configuration of Kodi, SPMC + TVMC,
 Thanks to all Devs who have contributed to this project!</description>
     <platform>all</platform>
   </extension>
