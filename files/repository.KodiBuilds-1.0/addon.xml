@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="repository.KodiBuilds-1.0" name="KodiBuild repo" version="1.0" provider-name="@StuC30">
+	<extension point="xbmc.addon.repository" name="KodiBuild repo">
+		<info compressed="false">https://github.com/stukodi/KodiBuildWizard/addons.xml</info>
+		<checksum>https://github.com/stukodi/KodiBuildWizard/addons.xml.md5</checksum>
+		<datadir zip="true">https://github.com/stukodi/KodiBuildWizard/</datadir>
+	</extension>
+    
+	<extension point="xbmc.addon.metadata">
+		<summary>Install My Addons</summary>
+		<description>Download and install addons from dexter!</description>
+		<platform>all</platform>
+	</extension>
+</addon>
+
