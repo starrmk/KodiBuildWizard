@@ -3,7 +3,7 @@
 	<extension point="xbmc.addon.repository" name="KodiBuild repo">
 		<info compressed="false">https://github.com/stukodi/KodiBuildWizard/addons.xml</info>
 		<checksum>https://github.com/stukodi/KodiBuildWizard/addons.xml.md5</checksum>
-		<datadir zip="true">https://github.com/stukodi/KodiBuildWizard/</datadir>
+		<datadir zip="true">https://github.com/stukodi/KodiBuildWizard/tree/master/files/</datadir>
 	</extension>
     
 	<extension point="xbmc.addon.metadata">
