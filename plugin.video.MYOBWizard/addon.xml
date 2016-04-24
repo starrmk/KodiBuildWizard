@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.KodiBuildWizard" name="The KodiStu Build Wizard" version="2.0" provider-name="Stu C">
+<addon id="plugin.video.MYOBWizard" name="MYOB InstallWizard" version="1.4" provider-name="@StuC30">
   <requires>
     <import addon="xbmc.python" version="2.19"/>
     <import addon="script.module.requests" />
@@ -9,9 +9,8 @@
         <provides>video executable</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary lang="en">The KodiStu Build Wizard</summary>
-    <description lang="en">The Kodi Build Wizard provides easy configuration of Kodi, SPMC + TVMC,
-Thanks to all Devs who have contributed to this project!</description>
+    <summary lang="en">MYOB InstallWizard</summary>
+    <description lang="en">The MYOB Install Wizard provides simple way of installing a build onto a device.  Just needs a full http:// url to the source zip file.</description>
     <platform>all</platform>
   </extension>
 </addon>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="repository.myobuilds-1.0" name="MYOBWizard Repo" version="1.0" provider-name="@StuC30">
+    <extension point="xbmc.addon.repository" name="SYOBWizard repo">
+        <info compressed="false">http://myobwizard.16mb.com/.myobwizard/files/addons.xml</info>
+        <checksum>http://myobwizard.16mb.com/.myobwizard/files/addons.xml.md5</checksum>
+        <datadir zip="true">http://myobwizard.16mb.com/.myobwizard/files/</datadir>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary>Install My Addons</summary>
+        <description>These addons have been created for use by the MYOBuild Wizard</description>
+        <platform>all</platform>
+    </extension>
+</addon>
+

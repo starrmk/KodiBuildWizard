@@ -1,6 +1,4 @@
-
 import xbmc, xbmcaddon, xbmcgui, xbmcplugin,os,base64,sys,xbmcvfs, requests
-
 import shutil
 import urllib, urllib2
 import re , glob
@@ -13,26 +11,20 @@ from addon.common.addon import Addon
 from addon.common.net import Net
 
 USER_AGENT   = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
-addon_id     = 'plugin.video.KodiBuildWizard'
-#PLUGIN       = 'plugin.video.KodiBuildWizard'
-
+addon_id     = 'plugin.video.MYOBWizard'
+#PLUGIN       = 'plugin.video.MYOBWizard'
 ADDON        = xbmcaddon.Addon(id=addon_id)
-
-PATH         = "The Kodi Build Wizard"
-VERSION      = "2.1.3"
-
+PATH         = "MYOB InstallWizard"
+VERSION      = "1.4"
 dialog       = xbmcgui.Dialog()
 dp           = xbmcgui.DialogProgress()
 net          = Net()
 U            = ADDON.getSetting('User')
 
-FANART       = xbmc.translatePath(os.path.join('special://home/addons/' + addon_id , 'background.jpg'))
+FANART       = xbmc.translatePath(os.path.join('special://home/addons/' + addon_id, 'background.jpg'))
 ICON         = xbmc.translatePath(os.path.join('special://home/addons/' + addon_id, 'icon.png'))
 ART          = xbmc.translatePath(os.path.join('special://home/addons/' + addon_id + '/resources/art/'))
-
 WZPATH       = xbmc.translatePath(os.path.join('special://home/addons/' + addon_id))
-SYOPATH      = xbmc.translatePath(os.path.join('special://home/addons/plugin.video.MYOBWizard'))
-
 CMPATH       = xbmc.translatePath('special://home');
 DBPATH       = xbmc.translatePath('special://database');
 TNPATH       = xbmc.translatePath('special://thumbnails');
@@ -54,7 +46,6 @@ WIZSTR       = ADDON.getSetting('WizStr');
 restore_path     = os.path.join(xbmc.translatePath('special://profile/addon_data'), '')
 restorexbmc_path = os.path.join(xbmc.translatePath('special://profile'), '')
 restore_udata    = os.path.join(xbmc.translatePath('special://home/userdata'), '')
-restore_media    = os.path.join(xbmc.translatePath('special://home/media'), '')
 backup_path      = SCPATH1 + 'customisation/'
 guide_path       = SCPATH1 + 'epg/'
 
@@ -65,8 +56,12 @@ PWAS       = PWASN
 # Config Path change to....
 PNOW       = SCPATH
 BASEURL    = BDPATH
+#MYOBWIZ     = BASEURL 'http://myobwizard.16mb.com/.myobwizard/wizard/DEX_SPMC.txt'
+MYOBWIZ     = BASEURL + WIZSTR + '.txt'
+
+
 H          = 'http://'
-EXCLUDES   = ['metadata.common.imdb.com','plugin.video.KodiBuildWizard','plugin.video.MYOBWizard','repository.KodiBuilds-1.0','repository.syobuilds-1.0','repository.xbmc.org','xbmc.python','xbmc.python.pluginsource','script.module.addon.common','script.module.requests','common','service.xbmc.versioncheck','repository.dextertv','plugin.video.dex']
+EXCLUDES   = ['common','media','metadata.common.imdb.com','plugin.program.super.favourites','plugin.video.dex','plugin.video.MYOBWizard','repository.dextertv','repository.myobuilds-1.0','repository.q','repository.xbmc.org','script.module.requests','script.module.addon.common','service.xbmc.versioncheck','xbmc.python','xbmc.python.pluginsource']
 
 # Configure for Dexter Pro Bits....
 username = ADDON.getSetting('user')
@@ -79,165 +74,34 @@ _path = _addon.getAddonInfo("path")
 addonDir = ADDON.getAddonInfo('path').decode("utf-8")
 BASE = ADDON.getSetting('base')
 uEPG = ADDON.getSetting('epg')
+ZIPSTR = ADDON.getSetting('ZipStr')
+
 
 def INDEX():
-    addDir('1 - INSTALL KODIBUILD    ',BASEURL,2,ART+'icon.png',FANART,'')
-    addDir('2 - COMMON CONFIGURATION ',BASEURL,3,ART+'icon.png',FANART,'')
-    addDir('3 - MAINTENANCE          ',BASEURL,4,ART+'icon.png',FANART,'')
-    addDir('4 - BUILD ADMIN          ',BASEURL,17,ART+'icon.png',FANART,'')
-    addDir('5 - CONFIGURE DEXTERPRO  ',BASEURL,22,ART+'icon.png',FANART,'')
+    addDir('1 - Install from Wizard List   ',BASEURL,2,ART+'icon.png',FANART,'')
+    addDir('2 - Maintenance                ',BASEURL,4,ART+'icon.png',FANART,'')
     setView('movies', 'MAIN')
 
 def BUILDMENU():
-    link = OPEN_URL(BASEURL+'/wizard/wizard_'+WIZSTR+'.txt').replace('\n','').replace('\r','')
+    link = OPEN_URL(MYOBWIZ).replace('\n','').replace('\r','')
     match = re.compile('name="(.+?)".+?rl="(.+?)".+?mg="(.+?)".+?anart="(.+?)".+?escription="(.+?)"').findall(link)
     for name,url,iconimage,fanart,description in match:
         addDir(name,url,9,iconimage,fanart,description)
     setView('movies', 'MAIN')
 
-def BUILDUSERPASS():
-    link = OPEN_URL(BASEURL+'/wizard/wizard_install.txt').replace('\n','').replace('\r','')
-    match = re.compile('name="(.+?)".+?rl="(.+?)".+?mg="(.+?)".+?anart="(.+?)".+?escription="(.+?)"').findall(link)
-    for name,url,iconimage,fanart,description in match:
-        addDir(name,url,29,iconimage,fanart,description)
-    setView('movies', 'MAIN')
-
-
-
-def BUILDCOMMON():
-    addDir('1 - Install Super Favourites Data ',fav  ,16,ART+'icon.png',FANART,'')
-    addDir('2 - Install TvGuide Data  ',guide_path ,14,ART+'icon.png',FANART,'')
-    addDir('3 - Install Media Files           ',restore_media,27,ART+'icon.png',FANART,'')
-    addDir('==================================','url',1 ,ART+'icon.png',FANART,'')
-    addDir('4 - Install CommonFiles to Path   ',SCPATH1  ,10,ART+'icon.png',FANART,'')
-    addDir('5 - Install UserSettings From Zip ',restore_path,21,ART+'icon.png',FANART,'')
-    addDir('6 - Backup XML to Customisation   ','url',11,ART+'icon.png',FANART,'')
-    #addDir('6 - Patch XML Files with Path     ','url',13,ART+'icon.png',FANART,'')
-    addDir('7 - Restore XML From Customisation','url',12,ART+'icon.png',FANART,'')
-    setView('movies', 'MAIN')
-
 def MAINTENANCE():
-    addDir('1 - DELETE CACHE   ','url',6,ART+'icon.png',FANART,'')
-    addDir('2 - FRESH START    ','url',7,ART+'icon.png',FANART,'')
-    addDir('3 - DELETE PACKAGES','url',8,ART+'icon.png',FANART,'')
-    setView('movies', 'MAIN')
-
-def BUILDSC():
-    addDir('1 - Export Super Favourites Data ','url',15,ART+'icon.png',FANART,'')
-    addDir('2 - Export Build Data            ','url',18,ART+'icon.png',FANART,'')
-    addDir('3 - Export BuildWizard           ','url',19,ART+'icon.png',FANART,'')
-    addDir('4 - Export UserSettings to Zip   ','url',20,ART+'icon.png',FANART,'')
-    addDir('5 - Export MYOBWizard            ','url',25,ART+'icon.png',FANART,'')
-    addDir('6 - Export MEDIA Folder          ','url',26,ART+'icon.png',FANART,'')
-    
+    addDir('1 - DELETE CACHE      ','url',6 ,ART+'icon.png',FANART,'')
+    addDir('2 - DELETE PACKAGES   ','url',8 ,ART+'icon.png',FANART,'')
+    addDir('======================','url',1 ,ART+'icon.png',FANART,'')
+    addDir('3 - Create Build zip  ','url',18,ART+'icon.png',FANART,'')
+    addDir('======================','url',1 ,ART+'icon.png',FANART,'')
+    addDir('4 - FRESH START       ','url',7 ,ART+'icon.png',FANART,'')
     setView('movies', 'MAIN')
 
 
-####################################
-####  DEXTER PRO CONFIGURATION  ####
-####################################
-
-def DEXMENU1():
-    addDir('Configure Dexter TV ','url',23,ART+'icon.png',FANART,'')
-    addDir('Generate INI        ','url',24,ART+'icon.png',FANART,'')
-    addDir('Load User\Pass      ','url',28,ART+'icon.png',FANART,'')
-    setView('movies', 'MAIN')
-
-
-def do_configure():
-    dialog = xbmcgui.Dialog()
-    tecleado = keyboard_input(username,'username')
-    set_setting('user',tecleado)
-    tecleado2 = keyboard_input(password,'password')
-    set_setting('pass',tecleado2)
-    r = requests.get(BASE+'panel_api.php?'+'&username='+tecleado+'&password='+tecleado2)
-    step1 = (BASE+'get.php?'+'username='+tecleado+'&password='+tecleado2+'&type=m3u_plus&output=hls')
-    match=re.compile('auth":(.+?)').findall(r.content)
-    for auth in match:
-        if auth == '1':
-            dialog.ok('You Are Now Logged in', 'THANK YOU !')
-            set_setting('loggedin','1')
-            file_path_settings = xbmc.translatePath(os.path.join('special://profile','addon_data','pvr.iptvsimple','settings.xml'))
-            folder_path = xbmc.translatePath(os.path.join('special://profile','addon_data','pvr.iptvsimple'))
-            
-            # print "================================================================"
-            # print "ORIG & NEW             "
-            # print "ORIG file_path_settings : " + os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', '..', 'userdata', 'addon_data', 'pvr.iptvsimple', 'settings.xml')
-            # print " NEW file_path_settings : " + xbmc.translatePath(os.path.join('special://profile','addon_data','pvr.iptvsimple','settings.xml'))
-            # print "ORIG folder_path        : " + os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', '..', 'userdata', 'addon_data', 'pvr.iptvsimple')
-            # print " NEW folder_path        : " + xbmc.translatePath(os.path.join('special://profile','addon_data','pvr.iptvsimple'))
-                        
-            tecleado4 = keyboard_input('0','TimeShift In Hours')
-            timeshift=tecleado4
-            UseEPG = uEPG
-                        
-            if not os.path.exists(folder_path):
-                os.makedirs(folder_path)
-                    
-            file = open(file_path_settings, 'w')
-            file.write('<settings>\n')
-            file.write('<setting id="epgCache" value="true" />\n')
-            file.write('<setting id="epgPath" value="%s" />\n'%UseEPG)
-            file.write('<setting id="epgPathType" value="0" />\n')
-            file.write('<setting id="epgTSOverride" value="true" />\n')
-            file.write('<setting id="epgTimeShift" value="%s.000000" />\n'%timeshift)
-            file.write('<setting id="epgUrl" value="" />\n')
-            file.write('<setting id="logoBaseUrl" value="" />\n')
-            file.write('<setting id="logoFromEpg" value="1" />\n')
-            file.write('<setting id="logoPath" value="" />\n')
-            file.write('<setting id="logoPathType" value="1" />\n')
-            file.write('<setting id="m3uCache" value="true" />\n')
-            file.write('<setting id="m3uPath" value="" />\n')
-            file.write('<setting id="m3uPathType" value="1" />\n')
-            file.write('<setting id="m3uUrl" value="%s" />\n'%step1)
-            file.write('<setting id="sep1" value="" />\n')
-            file.write('<setting id="sep2" value="" />\n')
-            file.write('<setting id="sep3" value="" />\n')
-            file.write('<setting id="startNum" value="1" />\n')
-            file.write('</settings>\n')
-            file.close()
-            
-            file_path_settings = xbmc.translatePath(os.path.join('special://profile','addon_data','plugin.video.dex','settings.xml'))
-            folder_path = xbmc.translatePath(os.path.join('special://profile','addon_data','plugin.video.dex'))
-            
-            if not os.path.exists(folder_path):
-                os.makedirs(folder_path)
-            
-            file = open(file_path_settings, 'w')
-            file.write('<settings>\n')
-            file.write('<setting id="extention" value="m3u8" />\n')
-            file.write('<setting id="first" value="true" />\n')
-            file.write('<setting id="improve" value="" />\n')
-            file.write('<setting id="kasutajanimi" value="%s" />\n'%tecleado)
-            file.write('<setting id="lehekylg" value="http://185.115.32.12" />\n')
-            file.write('<setting id="message" value="0" />\n')
-            file.write('<setting id="pordinumber" value="8000"  />\n')
-            file.write('<setting id="salasona" value="%s" />\n'%tecleado2)
-            file.write('<setting id="uuendused" value="" />\n')
-            file.write('<setting id="vanemakood" value="1234" />\n')
-            file.write('<setting id="vanemalukk" value="false" />\n')
-            
-            file.write('</settings>\n')
-            file.close()
-    
-            dialog = xbmcgui.Dialog()
-            dialog.ok('Configuration of PVR is Successful', 'The PVR Simple Client of you KODI has been successfully configured. Please restart Kodi for the changes to take effect.')
-    
-        else:
-            dialog.ok('error','Incorrect User/password')
-
-def createini():
-    dialog = xbmcgui.Dialog()
-    with open(addonDir+"/dexter.ini", "w") as f:
-        url = ('http://185.115.32.12:8000/panel_api.php?username=%s&password=%s'%(username,password))
-        r = requests.get(url)
-        match=re.compile('"name":"(.+?)".+?stream_id":"(.+?)"').findall(r.content)
-        f.write('[plugin.video.dex]\n')
-        for name,stream in match:
-            f.write(name+'=plugin://plugin.video.dex/?url='+stream+'&mode=55\n')
-        f.close()
-        dialog.ok('All Done','Created INI In The special://home/addons/plugin.video.KodiBuildWizard/')
-
+#################################
+####### POPUP TEXT BOXES ########
+#################################
 def set_setting(name,value):
     ADDON.setSetting(name,value )
 
@@ -249,7 +113,6 @@ def keyboard_input(default_text="", title="", hidden=False):
     else:
         tecleado = ""
     return tecleado
-
 
 #################################
 ####### POPUP TEXT BOXES ########
@@ -273,18 +136,6 @@ def TextBoxes(heading,announce):
       return
   TextBox()
 
-
-
-def get_pass(url,name):
-    s = str(url)
-    SUser = s[:8]
-    SPass = s[9:]
-    set_setting('user',SUser)
-    set_setting('pass',SPass)
-    set_setting('dexp',str(name))
-    dialog.ok("Change User/Pass", "User Pass Now loaded : "+str(name), '','')
-
-
 #################################
 ####### OPEN URL         ########
 #################################
@@ -296,338 +147,6 @@ def OPEN_URL(url):
     response.close()
     return link
 
-#################################
-#### COPY SUPER FAVES  ##########
-#################################
-def BACKUP_SF():
-    if zip == '':
-        dialog.ok('"Super Faves Extract"','You have not set your ZIP Folder.\nPlease update the addon settings and try again.','','')
-        ADDON.openSettings(sys.argv[0])
-    to_backup = xbmc.translatePath(os.path.join('special://home/common/addon_data/plugin.program.super.favourites',))
-    backup_zip = xbmc.translatePath(os.path.join(USB,'SuperFav.zip'))
-    import zipfile
-
-    dp.create("USB BACKUP/RESTORE","Backing Up",'', 'Please Wait')
-    zipobj = zipfile.ZipFile(backup_zip , 'w', zipfile.ZIP_DEFLATED)
-    rootlen = len(to_backup)
-    for_progress = []
-    ITEM =[]
-    for base, dirs, files in os.walk(to_backup):
-        for file in files:
-            ITEM.append(file)
-    N_ITEM =len(ITEM)
-    for base, dirs, files in os.walk(to_backup):
-        for file in files:
-            for_progress.append(file)
-            progress = len(for_progress) / float(N_ITEM) * 100
-            dp.update(int(progress),"Backing Up",'[COLOR yellow]%s[/COLOR]'%file, 'Please Wait')
-            fn = os.path.join(base, file)
-            if not 'temp' in dirs:
-                if not 'plugin.video.KodiBuildWizard' in dirs:
-                    import time
-                    CUNT= '01/01/1980'
-                    FILE_DATE=time.strftime('%d/%m/%Y', time.gmtime(os.path.getmtime(fn)))
-                    if FILE_DATE > CUNT:
-                        zipobj.write(fn, fn[rootlen:])
-    zipobj.close()
-    dp.close()
-    dialog.ok("Super Faves Extract", "You Are Now Backed Up", '','')
-
-#################################
-#### COPY MEDIA        ##########
-#################################
-def BACKUP_MEDIA():
-    if zip == '':
-        dialog.ok('"MEDIA Files Extract"','You have not set your ZIP Folder.\nPlease update the addon settings and try again.','','')
-        ADDON.openSettings(sys.argv[0])
-    to_backup = xbmc.translatePath(os.path.join('special://home/media',))
-    backup_zip = xbmc.translatePath(os.path.join(USB,'Media.zip'))
-    import zipfile
-
-    dp.create("Create Media Files Extract","Backing Up",'', 'Please Wait')
-    zipobj = zipfile.ZipFile(backup_zip , 'w', zipfile.ZIP_DEFLATED)
-    rootlen = len(to_backup)
-    for_progress = []
-    ITEM =[]
-    for base, dirs, files in os.walk(to_backup):
-        for file in files:
-            ITEM.append(file)
-    N_ITEM =len(ITEM)
-    for base, dirs, files in os.walk(to_backup):
-        for file in files:
-            for_progress.append(file)
-            progress = len(for_progress) / float(N_ITEM) * 100
-            dp.update(int(progress),"Backing Up",'[COLOR yellow]%s[/COLOR]'%file, 'Please Wait')
-            fn = os.path.join(base, file)
-            if not 'temp' in dirs:
-                if not 'plugin.video.KodiBuildWizard' in dirs:
-                    import time
-                    CUNT= '01/01/1980'
-                    FILE_DATE=time.strftime('%d/%m/%Y', time.gmtime(os.path.getmtime(fn)))
-                    if FILE_DATE > CUNT:
-                        zipobj.write(fn, fn[rootlen:])
-    zipobj.close()
-    dp.close()
-    dialog.ok("Media Files Extract", "You Are Now Backed Up", '','')
-
-#################################
-#### COPY WIZARD       ##########
-#################################
-def BACKUP_WZ():
-    if zip == '':
-        dialog.ok('"Wizard Build.."','You have not set your ZIP Folder.\nPlease update the addon settings and try again.','','')
-        ADDON.openSettings(sys.argv[0])
-    to_backup = WZPATH
-    backup_zip = xbmc.translatePath(os.path.join(USB,addon_id +  '.zip'))
-    import zipfile
-
-    dp.create("Extract Wizard","Backing Up",'', 'Please Wait')
-    zipobj = zipfile.ZipFile(backup_zip , 'w', zipfile.ZIP_DEFLATED)
-    rootlen = len(to_backup) - len(addon_id)
-    for_progress = []
-    ITEM =[]
-    for base, dirs, files in os.walk(to_backup):
-        for file in files:
-            ITEM.append(file)
-    N_ITEM =len(ITEM)
-    for base, dirs, files in os.walk(to_backup):
-        for file in files:
-            for_progress.append(file)
-            progress = len(for_progress) / float(N_ITEM) * 100
-            dp.update(int(progress),"Backing Up",'[COLOR yellow]%s[/COLOR]'%file, 'Please Wait')
-            fn = os.path.join(base, file)
-            if not 'temp' in dirs:
-                if not 'plugin.video.KodiBuildWizard' in dirs:
-                    import time
-                    CUNT= '01/01/1980'
-                    FILE_DATE=time.strftime('%d/%m/%Y', time.gmtime(os.path.getmtime(fn)))
-                    if FILE_DATE > CUNT:
-                        zipobj.write(fn, fn[rootlen:])
-    zipobj.close()
-    dp.close()
-    dialog.ok("Extract Wizard", "Wizard has been Extracted...", '','')
-
-#################################
-#### COPY MYOB WIZARD      ######
-#################################
-def BACKUP_SYOWZ():
-    if zip == '':
-        dialog.ok('"MYOBWizard Build.."','You have not set your ZIP Folder.\nPlease update the addon settings and try again.','','')
-        ADDON.openSettings(sys.argv[0])
-    to_backup = SYOPATH
-
-    backup_zip = xbmc.translatePath(os.path.join(USB,'plugin.video.MYOBWizard.zip'))
-    import zipfile
-
-    dp.create("Extract Wizard","Backing Up",'', 'Please Wait')
-    zipobj = zipfile.ZipFile(backup_zip , 'w', zipfile.ZIP_DEFLATED)
-    rootlen = len(to_backup) - len('plugin.video.MYOBWizard')
-    for_progress = []
-    ITEM =[]
-    for base, dirs, files in os.walk(to_backup):
-        for file in files:
-            ITEM.append(file)
-    N_ITEM =len(ITEM)
-    for base, dirs, files in os.walk(to_backup):
-        for file in files:
-            for_progress.append(file)
-            progress = len(for_progress) / float(N_ITEM) * 100
-            dp.update(int(progress),"Backing Up",'[COLOR yellow]%s[/COLOR]'%file, 'Please Wait')
-            fn = os.path.join(base, file)
-            if not 'temp' in dirs:
-                if not 'plugin.video.MYOBWizard' in dirs:
-                    import time
-                    CUNT= '01/01/1980'
-                    FILE_DATE=time.strftime('%d/%m/%Y', time.gmtime(os.path.getmtime(fn)))
-                    if FILE_DATE > CUNT:
-                        zipobj.write(fn, fn[rootlen:])
-    zipobj.close()
-    dp.close()
-    dialog.ok("Extract Wizard", "MYOBWizard has been Extracted...", '','')
-
-
-
-
-
-#################################
-#### COPY USER EXP.    ##########
-#################################
-def BACKUP_UX():
-    if zip == '':
-        dialog.ok('"Backup User Experience"','You have not set your ZIP Folder.\nPlease update the addon settings and try again.','','')
-        ADDON.openSettings(sys.argv[0])
-    to_backup = xbmc.translatePath(os.path.join(backup_path))
-    backup_zip = xbmc.translatePath(os.path.join(USB, USEREXP + '.zip'))
-    import zipfile
-
-    dp.create("USB BACKUP/RESTORE","Backing Up",'', 'Please Wait')
-    zipobj = zipfile.ZipFile(backup_zip , 'w', zipfile.ZIP_DEFLATED)
-    rootlen = len(to_backup)
-    for_progress = []
-    ITEM =[]
-    for base, dirs, files in os.walk(to_backup):
-        for file in files:
-            ITEM.append(file)
-    N_ITEM =len(ITEM)
-    for base, dirs, files in os.walk(to_backup):
-        for file in files:
-            for_progress.append(file)
-            progress = len(for_progress) / float(N_ITEM) * 100
-            dp.update(int(progress),"Backing Up",'[COLOR yellow]%s[/COLOR]'%file, 'Please Wait')
-            fn = os.path.join(base, file)
-            if not 'temp' in dirs:
-                if not 'plugin.video.KodiBuildWizard' in dirs:
-                    import time
-                    CUNT= '01/01/1980'
-                    FILE_DATE=time.strftime('%d/%m/%Y', time.gmtime(os.path.getmtime(fn)))
-                    if FILE_DATE > CUNT:
-                        zipobj.write(fn, fn[rootlen:])
-    zipobj.close()
-    dp.close()
-    dialog.ok("Backup User Experience", "You Are Now Backed Up", '','')
-
-
-#################################
-#### BACKUP BUILD      ##########
-#################################
-def BACKUP_BD():
-    if zip == '':
-        dialog.ok('"Build Backup"','You have not set your ZIP Folder.\nPlease update the addon settings and try again.','','')
-        ADDON.openSettings(sys.argv[0])
-    to_backup  = xbmc.translatePath(os.path.join('special://home/addons',))
-    to_backup0 = xbmc.translatePath(os.path.join('special://home/common',))
-    to_backup1 = xbmc.translatePath(os.path.join('special://home/media',))
-    to_backup2 = xbmc.translatePath(os.path.join('special://home/userdata',))
-
-    backup_zip = xbmc.translatePath(os.path.join(USB,'ArchiveCURR.zip'))
-    import zipfile
-
-    dp.create("Extract Build...","Backing Up",'', 'Please Wait')
-    zipobj = zipfile.ZipFile(backup_zip , 'w', zipfile.ZIP_DEFLATED)
-    rootlen = len(to_backup)-7
-    for_progress = []
-    ITEM =[]
-
-    for base, dirs, files in os.walk(to_backup):
-        for file in files:
-            ITEM.append(file)
-        N_ITEM =len(ITEM)
-    for base, dirs, files in os.walk(to_backup):
-        for file in files:
-            for_progress.append(file)
-            progress = len(for_progress) / float(N_ITEM) * 100
-            dp.update(int(progress),"Backing Up",'[COLOR yellow]%s[/COLOR]'%file, 'Please Wait')
-            fn = os.path.join(base, file)
-            if not 'temp' in dirs:
-                if not 'plugin.video.KodiBuildWizard' in dirs:
-                    import time
-                    CUNT= '01/01/1980'
-                    FILE_DATE=time.strftime('%d/%m/%Y', time.gmtime(os.path.getmtime(fn)))
-                    if FILE_DATE > CUNT:
-                        zipobj.write(fn, fn[rootlen:])
-
-    for base, dirs, files in os.walk(to_backup0):
-        for file in files:
-            ITEM.append(file)
-        N_ITEM =len(ITEM)
-    for base, dirs, files in os.walk(to_backup0):
-        for file in files:
-            for_progress.append(file)
-            progress = len(for_progress) / float(N_ITEM) * 100
-            dp.update(int(progress),"Backing Up",'[COLOR yellow]%s[/COLOR]'%file, 'Please Wait')
-            fn = os.path.join(base, file)
-            if not 'temp' in dirs:
-                if not 'plugin.video.KodiBuildWizard' in dirs:
-                    import time
-                    CUNT= '01/01/1980'
-                    FILE_DATE=time.strftime('%d/%m/%Y', time.gmtime(os.path.getmtime(fn)))
-                    if FILE_DATE > CUNT:
-                        zipobj.write(fn, fn[rootlen:])
-
-    for base, dirs, files in os.walk(to_backup1):
-        for file in files:
-            ITEM.append(file)
-        N_ITEM =len(ITEM)
-    for base, dirs, files in os.walk(to_backup1):
-        for file in files:
-            for_progress.append(file)
-            progress = len(for_progress) / float(N_ITEM) * 100
-            dp.update(int(progress),"Backing Up",'[COLOR yellow]%s[/COLOR]'%file, 'Please Wait')
-            fn = os.path.join(base, file)
-            if not 'temp' in dirs:
-                if not 'plugin.video.KodiBuildWizard' in dirs:
-                    import time
-                    CUNT= '01/01/1980'
-                    FILE_DATE=time.strftime('%d/%m/%Y', time.gmtime(os.path.getmtime(fn)))
-                    if FILE_DATE > CUNT:
-                        zipobj.write(fn, fn[rootlen:])
-
-    for base, dirs, files in os.walk(to_backup2):
-        for file in files:
-            ITEM.append(file)
-        N_ITEM =len(ITEM)
-    for base, dirs, files in os.walk(to_backup2):
-        for file in files:
-            for_progress.append(file)
-            progress = len(for_progress) / float(N_ITEM) * 100
-            dp.update(int(progress),"Backing Up",'[COLOR yellow]%s[/COLOR]'%file, 'Please Wait')
-            fn = os.path.join(base, file)
-            if not 'temp' in dirs:
-                if not 'plugin.video.KodiBuildWizard' in dirs:
-                    import time
-                    CUNT= '01/01/1980'
-                    FILE_DATE=time.strftime('%d/%m/%Y', time.gmtime(os.path.getmtime(fn)))
-                    if FILE_DATE > CUNT:
-                        zipobj.write(fn, fn[rootlen:])
-
-
-    zipobj.close()
-    dp.close()
-    dialog.ok("Build has been Extracted..", "You Are Now Backed Up....", '','')
-
-
-#################################
-####COPY CUSTOMISATION ##########     restorexbmc_path
-#################################
-def backup_xml(url):
-    for xml_file in glob.glob(os.path.join(restore_udata, "sources.xml")):
-        shutil.copy(xml_file, backup_path)
-    
-    for xml_file in glob.glob(os.path.join(restore_udata, "advancedsettings.xml")):
-        shutil.copy(xml_file, backup_path)
-    directories = os.listdir(restore_path)
-    for d in directories:
-        create_directory(backup_path, d)
-        source = os.path.join(restore_path, d)
-        destination = os.path.join(backup_path, d)
-        for xml_file in glob.glob(os.path.join(source, "settings.xml")):
-            shutil.copy(xml_file, destination)
-        for xml_file in glob.glob(os.path.join(source, "*.list")):
-            shutil.copy(xml_file, destination)
-    dialog = xbmcgui.Dialog()
-    dialog.ok("XML Backup", "All userdata and addon settings.xml files backed up")
-
-
-def restore_xml(url):
-    for xml_file in glob.glob(os.path.join(restore_udata, "sources.xml")):
-        shutil.copy(xml_file, backup_path)
-        #for xml_file in glob.glob(os.path.join(backup_path, "*.xml")):
-        #   shutil.copy(xml_file, restorexbmc_path)
-    
-    directories = os.listdir(backup_path)
-    for d in directories:
-        source = os.path.join(backup_path, d)
-        destination = os.path.join(restore_path, d)
-        for xml_file in glob.glob(os.path.join(source, "settings.xml")):
-            shutil.copy(xml_file, destination)
-        for xml_file in glob.glob(os.path.join(source, "*.list")):
-            shutil.copy(xml_file, destination)
-
-    dialog = xbmcgui.Dialog()
-    if dialog.yesno("XML Backup", "All userdata/*.xml and addon 'settings.xml' files restored", "Reboot to load restored gui settings settings", '', "Reboot Later", "Reboot Now"):
-        killxbmc()
-    #else:
-        #xbmc.executebuiltin('xbmc.activatewindow(0)')
 
 def create_directory(dir_path, dir_name=None):
     if dir_name:
@@ -637,189 +156,6 @@ def create_directory(dir_path, dir_name=None):
         os.makedirs(dir_path)
     return dir_path
 
-#################################
-####COPY CUSTOMISATION ##########
-#################################
-
-def patch_xml(url):
-    for xml_file in glob.glob(os.path.join(restore_udata, "*.xml")):
-        replace_xml(xml_file)
-    
-    directories = os.listdir(restore_udata)
-    for d in directories:
-        print "restore_udata" + restore_udata
-        source = os.path.join(restore_udata, d)
-        for xml_file in glob.glob(os.path.join(source, "settings.xml")):
-            replace_xml(xml_file)
-        for xml_file in glob.glob(os.path.join(source, "*.list")):
-            replace_xml(xml_file)
-
-def replace_xml(inpfile):
-    f = open(inpfile,'r')
-    filedata = f.read()
-    f.close()
-    newdata = filedata.replace( PWAS , PNOW )
-    f = open(inpfile,'w')
-    f.write(newdata)
-    f.close
-
-#################################
-#### GET TV GUIDE ###############
-#################################
-
-def get_tvguide(url):
-    path = xbmc.translatePath(os.path.join('special://home/addons','packages'))
-    dp = xbmcgui.DialogProgress()
-    dp.create("Kodi Build Wizard","Downloading TV GUIDE ", '', 'Please Wait')
-    
-    url2 = xbmc.translatePath(url)
-
-    directories = os.listdir(url2)
-    for d in directories:
-        create_directory(url2, d)
-    
-    lib=os.path.join(path, 'tvguide.zip')
-    try:
-        os.remove(lib)
-    except:
-        pass
-    downloader.download(BASEURL+'/epg/tvguide.zip',lib,dp)
-    addonfolder = url2
-    time.sleep(2)
-    dp.update(0,"", "Extracting Zip Please Wait")
-    print '======================================='
-    print addonfolder
-    print '======================================='
-    extract.all(lib,addonfolder,dp)
-    
-    dialog = xbmcgui.Dialog()
-    dialog.ok("The Kodi Build Wizard", "New TV Guide Data has been Downloaded, Data will be refreshed on Restart")
-
-#################################
-#### GET MEDIA ###############
-#################################
-
-def get_media(url):
-    path = xbmc.translatePath(os.path.join('special://home/addons','packages'))
-    dp = xbmcgui.DialogProgress()
-    dp.create("Kodi Build Wizard","Downloading MEDIA Pack ", '', 'Please Wait')
-    
-    url2 = xbmc.translatePath(url)
-    
-    directories = os.listdir(url2)
-    for d in directories:
-        create_directory(url2, d)
-    
-    lib=os.path.join(path, 'media.zip')
-    try:
-        os.remove(lib)
-    except:
-        pass
-    downloader.download(BASEURL+'/patches/Media.zip',lib,dp)
-    addonfolder = url2
-    time.sleep(2)
-    dp.update(0,"", "Extracting Zip Please Wait")
-    print '======================================='
-    print addonfolder
-    print '======================================='
-    extract.all(lib,addonfolder,dp)
-    
-    dialog = xbmcgui.Dialog()
-    dialog.ok("The Kodi Build Wizard", "New MEDIA Pack has been Downloaded..")
-
-
-
-#################################
-#### GET USER CUSTOM ZIP  ########
-#################################
-
-def get_usercustom(url):
-    path = xbmc.translatePath(os.path.join('special://home/addons','packages'))
-    dp = xbmcgui.DialogProgress()
-    dp.create("Kodi Build Wizard","Get User Customisation ", '', 'Please Wait')
-
-    
-    directories = os.listdir(url)
-    for d in directories:
-        create_directory(url, d)
-    
-    lib=os.path.join(path, USEREXP + '.zip')
-    try:
-        os.remove(lib)
-    except:
-        pass
-    downloader.download(BASEURL + '/users/' + USEREXP + '.zip',lib,dp)
-    addonfolder = url
-    time.sleep(2)
-    dp.update(0,"", "Extracting Zip Please Wait")
-    print '======================================='
-    print addonfolder
-    print '======================================='
-    extract.all(lib,addonfolder,dp)
-    
-    dialog = xbmcgui.Dialog()
-    dialog.ok("The Kodi Build Wizard", "User Customisation Have been downloaded. Enjoy!!!")
-
-#################################
-#### GET SUPER FAVS ZIP  ########
-#################################
-
-def get_superfav(url):
-    path = xbmc.translatePath(os.path.join('special://home/addons','packages'))
-    dp = xbmcgui.DialogProgress()
-    dp.create("Kodi Build Wizard","Get New Favourites ", '', 'Please Wait')
-    print "URL IS : " + url
-    print "URL IS REALLY " + xbmc.translatePath(url)
-    url2 = xbmc.translatePath(url)
-    
-    directories = os.listdir(url2)
-    for d in directories:
-        create_directory(url2, d)
-    
-    lib=os.path.join(path, 'SuperFav.zip')
-    try:
-        os.remove(lib)
-    except:
-        pass
-    downloader.download(BASEURL+'/patches/SuperFav.zip',lib,dp)
-    addonfolder = url2
-    time.sleep(2)
-    dp.update(0,"", "Extracting Zip Please Wait")
-    print '======================================='
-    print addonfolder
-    print '======================================='
-    extract.all(lib,addonfolder,dp)
-    
-    dialog = xbmcgui.Dialog()
-    dialog.ok("The Kodi Build Wizard", "New Favourites Have been downloaded. Enjoy!!!")
-
-
-#################################
-####BUILD COMMON ################
-#################################
-
-def MAKECOMMON(name,url,description):
-    path = xbmc.translatePath(os.path.join('special://home/addons','packages'))
-    dp = xbmcgui.DialogProgress()
-    dp.create("Kodi Build Wizard","Downloading ", '', 'Please Wait')
-    lib=os.path.join(path, 'common.zip')
-    try:
-        os.remove(lib)
-    except:
-        pass
-    downloader.download(BASEURL+'/patches/common.zip',lib,dp)
-
-    addonfolder = url
-    time.sleep(2)
-    dp.update(0,"", "Extracting Zip Please Wait")
-    print '======================================='
-    print addonfolder
-    print '======================================='
-    extract.all(lib,addonfolder,dp)
-
-    dialog = xbmcgui.Dialog()
-    dialog.ok("The Kodi Build Wizard", "Common Folder Created in Selected Location, Press OK to force close Kodi")
-    killxbmc()
 
 #################################
 ####BUILD INSTALL################
@@ -828,7 +164,7 @@ def MAKECOMMON(name,url,description):
 def WIZARD(name,url,description):
     path = xbmc.translatePath(os.path.join('special://home/addons','packages'))
     dp = xbmcgui.DialogProgress()
-    dp.create("The Kodi Build Wizard","Downloading ",'', 'Please Wait')
+    dp.create("The MYOBuild Wizard","Downloading ",'', 'Please Wait')
     lib=os.path.join(path, name+'.zip')
     try:
        os.remove(lib)
@@ -843,8 +179,108 @@ def WIZARD(name,url,description):
     print '======================================='
     extract.all(lib,addonfolder,dp)
     dialog = xbmcgui.Dialog()
-    dialog.ok("The Kodi Build Wizard", "To save changes you now need to force close Kodi, Press OK to force close Kodi")
+    dialog.ok("The MYOBuild Wizard", "To save changes you now need to force close Kodi, Press OK to force close Kodi")
     killxbmc()
+
+#################################
+#### BACKUP BUILD      ##########
+#################################
+def BACKUP_BD():
+    if zip == '':
+        dialog.ok('"Build Backup"','You have not set your ZIP Folder.\nPlease update the addon settings and try again.','','')
+        ADDON.openSettings(sys.argv[0])
+    to_backup  = xbmc.translatePath(os.path.join('special://home/addons',))
+    to_backup0 = xbmc.translatePath(os.path.join('special://home/common',))
+    to_backup1 = xbmc.translatePath(os.path.join('special://home/media',))
+    to_backup2 = xbmc.translatePath(os.path.join('special://home/userdata',))
+
+    backup_zip = xbmc.translatePath(os.path.join(USB,'SPMC_DEX.zip'))
+    import zipfile
+    
+    dp.create("Extract Build...","Backing Up",'', 'Please Wait')
+    zipobj = zipfile.ZipFile(backup_zip , 'w', zipfile.ZIP_DEFLATED)
+    rootlen = len(to_backup)-7
+    for_progress = []
+    ITEM =[]
+    
+    for base, dirs, files in os.walk(to_backup):
+        for file in files:
+            ITEM.append(file)
+        N_ITEM =len(ITEM)
+    for base, dirs, files in os.walk(to_backup):
+        for file in files:
+            for_progress.append(file)
+            progress = len(for_progress) / float(N_ITEM) * 100
+            dp.update(int(progress),"Backing Up",'[COLOR yellow]%s[/COLOR]'%file, 'Please Wait')
+            fn = os.path.join(base, file)
+            if not 'temp' in dirs:
+                if not 'plugin.video.MYOBWizard' in dirs:
+                    import time
+                    CUNT= '01/01/1980'
+                    FILE_DATE=time.strftime('%d/%m/%Y', time.gmtime(os.path.getmtime(fn)))
+                    if FILE_DATE > CUNT:
+                        zipobj.write(fn, fn[rootlen:])
+
+    for base, dirs, files in os.walk(to_backup0):
+        for file in files:
+            ITEM.append(file)
+        N_ITEM =len(ITEM)
+    for base, dirs, files in os.walk(to_backup0):
+        for file in files:
+            for_progress.append(file)
+            progress = len(for_progress) / float(N_ITEM) * 100
+            dp.update(int(progress),"Backing Up",'[COLOR yellow]%s[/COLOR]'%file, 'Please Wait')
+            fn = os.path.join(base, file)
+            if not 'temp' in dirs:
+                if not 'plugin.video.MYOBWizard' in dirs:
+                    import time
+                    CUNT= '01/01/1980'
+                    FILE_DATE=time.strftime('%d/%m/%Y', time.gmtime(os.path.getmtime(fn)))
+                    if FILE_DATE > CUNT:
+                        zipobj.write(fn, fn[rootlen:])
+
+    for base, dirs, files in os.walk(to_backup1):
+        for file in files:
+            ITEM.append(file)
+        N_ITEM =len(ITEM)
+    for base, dirs, files in os.walk(to_backup1):
+        for file in files:
+            for_progress.append(file)
+            progress = len(for_progress) / float(N_ITEM) * 100
+            dp.update(int(progress),"Backing Up",'[COLOR yellow]%s[/COLOR]'%file, 'Please Wait')
+            fn = os.path.join(base, file)
+            if not 'temp' in dirs:
+                if not 'plugin.video.MYOBWizard' in dirs:
+                    import time
+                    CUNT= '01/01/1980'
+                    FILE_DATE=time.strftime('%d/%m/%Y', time.gmtime(os.path.getmtime(fn)))
+                    if FILE_DATE > CUNT:
+                        zipobj.write(fn, fn[rootlen:])
+
+    for base, dirs, files in os.walk(to_backup2):
+        for file in files:
+            ITEM.append(file)
+        N_ITEM =len(ITEM)
+    for base, dirs, files in os.walk(to_backup2):
+        for file in files:
+            for_progress.append(file)
+            progress = len(for_progress) / float(N_ITEM) * 100
+            dp.update(int(progress),"Backing Up",'[COLOR yellow]%s[/COLOR]'%file, 'Please Wait')
+            fn = os.path.join(base, file)
+            if not 'temp' in dirs:
+                if not 'plugin.video.MYOBWizard' in dirs:
+                    import time
+                    CUNT= '01/01/1980'
+                    FILE_DATE=time.strftime('%d/%m/%Y', time.gmtime(os.path.getmtime(fn)))
+                    if FILE_DATE > CUNT:
+                        zipobj.write(fn, fn[rootlen:])
+
+
+    zipobj.close()
+    dp.close()
+    dialog.ok("Build has been Extracted..", "You Are Now Backed Up....", '','')
+
+
 
 ################################
 ###DELETE PACKAGES##############
@@ -869,10 +305,10 @@ def DeletePackages(url):
                     for d in dirs:
                         shutil.rmtree(os.path.join(root, d))
                     dialog = xbmcgui.Dialog()
-                    dialog.ok("The KodiStu Build Wizard", "Packages Successfuly Removed", "[COLOR blue] Time to Restart [/COLOR]")
+                    dialog.ok("The MYOBuild Build Wizard", "Packages Successfuly Removed", "[COLOR blue] Time to Restart [/COLOR]")
     except: 
         dialog = xbmcgui.Dialog()
-        dialog.ok("The KodiStu Build Wizard", "Sorry we were not able to remove Package Files", "[COLOR blue] Time to Restart [/COLOR]")
+        dialog.ok("The MYOBuild Build Wizard", "Sorry we were not able to remove Package Files", "[COLOR blue] Time to Restart [/COLOR]")
 
 #################################
 ###DELETE CACHE##################
@@ -1075,11 +511,11 @@ def deletecachefiles(url):
 				
 
     dialog = xbmcgui.Dialog()
-    dialog.ok("The Kodi Build Wizard", " All Cache Files Removed", "[COLOR blue] Time to Restart [/COLOR]")
+    dialog.ok("The MYOBuild Wizard", " All Cache Files Removed", "[COLOR blue] Time to Restart [/COLOR]")
 
 
 def facebook():
-    TextBoxes('The KodiStu Build Wizard', '[COLOR=red]Welcome to The KodiStu Build Wizard[/COLOR]')
+    TextBoxes('The MYOBuild Build Wizard', '[COLOR=red]Welcome Dexter Pro MYOBuild Build Wizard[/COLOR]')
 
 
 
@@ -1290,19 +726,11 @@ except:
 print str(PATH)+': '+str(VERSION)
 print " Mode        : "+str(mode)
 print " URL         : "+str(url)
-#print " Name        : "+str(name)
-#print " IconImage   : "+str(iconimage)
-#print " * SCPATH 1  : " + SCPATH1
-#print " -- COMMON PATH  : " + SCPATH1
-#print " -- BACK THIS UP : " + restore_path
-#print " -- INTO HERE    : " + backup_path
-#print " -- BACKUP_PATH   : " + backup_path
-#print " -- restore_udata : " + restore_udata
-#print " -- restore_path : " + restore_path
-#print " -- PWAS " + PWAS
-#print " -- PNOW " + PNOW
-#print " -- WZPATH = " + WZPATH
-#print " -- ZIP TO GET : " + BASEURL+'/build/' + USEREXP + '.zip'
+print " Name        : "+str(name)
+print " IconImage   : "+str(iconimage)
+print " ZIPSTR  : " + ZIPSTR
+print " SPMC STR : " + MYOBWIZ
+
 
 
 
@@ -1317,7 +745,7 @@ if mode==None or url==None or len(url)<1:
 elif mode==2:
         BUILDMENU()
 elif mode==3:
-        BUILDCOMMON()
+        BUILDMENU2()
 elif mode==4:
         MAINTENANCE()
 elif mode==5:
@@ -1360,16 +788,6 @@ elif mode==23:
         do_configure()
 elif mode==24:
         createini()
-elif mode==25:
-        BACKUP_SYOWZ()
-elif mode==26:
-        BACKUP_MEDIA()
-elif mode==27:
-        get_media(url)
-elif mode==28:
-        BUILDUSERPASS()
-elif mode==29:
-        get_pass(url,name)
 elif mode==99:
         facebook()
 

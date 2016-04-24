@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="repository.KodiBuilds-1.0" name="KodiBuild repo" version="1.0" provider-name="@StuC30">
+<addon id="repository.KodiBuilds-1.0" name="KodiBuild repo" version="1.0.1" provider-name="@StuC30">
 	<extension point="xbmc.addon.repository" name="KodiBuild repo">
-		<info compressed="false">https://github.com/stukodi/KodiBuildWizard/addons.xml</info>
-		<checksum>https://github.com/stukodi/KodiBuildWizard/addons.xml.md5</checksum>
-		<datadir zip="true">https://github.com/stukodi/KodiBuildWizard/tree/master/files/</datadir>
+		<info compressed="false">http://kodistu.16mb.com/.kodibuildwizard/files/addons.xml</info>
+		<checksum>http://kodistu.16mb.com/.kodibuildwizard/files/addons.xml.md5</checksum>
+		<datadir zip="true">http://kodistu.16mb.com/.kodibuildwizard/files/</datadir>
 	</extension>
     
 	<extension point="xbmc.addon.metadata">
 		<summary>Install My Addons</summary>
-		<description>Download and install addons from dexter!</description>
+		<description>Download and install addons from @StuC30</description>
 		<platform>all</platform>
 	</extension>
 </addon>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+    <category label="Auto-View">
+        <setting id="auto-view" type="bool" label="Enable Auto View" default="true"/>
+        <setting id="MAIN" type="number" label="MAIN" default="50" enable="!eq(-1,false)"/>
+        <setting id="message" type="bool" label="for messages" default="false" visible="false"/>
+        <setting id="pop_time" type="text" label="For POP UP" default="2000-01-01 00:00:00" visible="false"/>
+        <setting id="ga_time" type="text" label="GA Called" default="2000-01-01 00:00:00" visible="false"/>
+        <setting id="visitor_ga" type="text" label="GA visitor" default="" visible="false"/>
+   	</category>
+    
+    <category label="Sources">
+        <setting id="zip"             type="folder" label="Output Zip Files To : " default=""                   visible="true" />
+        <setting id="WizStr"          type="text"   label="Wizard Text File    : " default="DEX_SPMC"           visible="true" />
+        <setting id="base_url"        type="text"   label="Base Install Path   : " default="http://myobwizard.16mb.com/.myobwizard/wizard/" visible="false" />
+
+        <setting id="COMMON_HOME_SD"  type="folder" label="Common Folder Used  : " source="auto" option="writeable" default="special://home/"         visible="true"/>
+        <setting id="ZipStr"          type="text"   label="Single Zip URL    : " default="http://myobwizard.16mb.com/"  visible="false" />
+        <setting id="COMMON_SELECTED" type="text"   label="Current Selected Common " default="COMMON_HOME_SD" visible="false" />
+        <setting id="COMMON_HOME_MB"  type="folder" label="Path = COMMON_HOME_MB   " source="auto" option="writeable" default="special://home/common/"  visible="false"/>
+        <setting id="UserExp"         type="text"   label="Custom User Flag      : " default="none" visible="false" />
+        
+    </category>
+    
+    
+
+  </settings>
